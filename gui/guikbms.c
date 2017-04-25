@@ -1,4 +1,4 @@
-/*	guikbdmus.c for ulios graphical user interface
+/*	guikbms.c for ulios graphical user interface
 	作者：孙亮
 	功能：图形用户界面键盘鼠标功能实现
 	最后修改日期：2011-05-22

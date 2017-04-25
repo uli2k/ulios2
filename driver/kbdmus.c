@@ -112,6 +112,8 @@ int main()
 	OutMouse(0x50);	/*采样率80*/
 	OutMouse(0xF2);	/*取得鼠标ID*/
 	MusId = Read8042();
+	if (MusId == 0xFA)
+		MusId = 0;
 	OutMouse(0xF4);	/*允许鼠标发数据*/
 	/*打开中断位*/
 	Cmd8042(0x60);	/*发往8042命令寄存器*/

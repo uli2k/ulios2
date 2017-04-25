@@ -4,6 +4,7 @@
 	最后修改日期：2009-10-30
 	备注：使用Turbo C TCC编译器编译成16位COM文件
 */
+typedef unsigned short	BOOL;
 typedef unsigned char	BYTE;
 typedef unsigned short	WORD;
 typedef unsigned long	DWORD;
@@ -63,6 +64,9 @@ typedef struct _DIR
 #define BIN_ADDR	((DWORD *)0x0080)				/*Bin程序段数据数组*/
 #define SYS_DIR		((BYTE *)0x0280)				/*系统目录字符串*/
 #define VESA_MODE	((WORD *)0x02FC)				/*启动VESA模式号*/
+
+#define TRUE	1
+#define FALSE	0
 
 #define NO_ERROR	0
 #define NOT_FOUND	1
@@ -204,6 +208,7 @@ WORD SearchDir(	BPB *bpb,			/*输入：分区BPB*/
 				BYTE *buf,			/*修改：数据缓存*/
 				DIR *SrcDir,		/*输入：搜索的目录*/
 				BYTE *FileName,		/*输入：被搜索的目录项名称*/
+				BOOL isDir,			/*输入：是否是目录*/
 				DIR *DstDir)		/*输出：找到的目录项*/
 {
 	WORD idxcou, idxi, idxblkcou;	/*每次读取的索引节点数，索引节点索引，每次读取的索引扇区数*/
@@ -239,17 +244,16 @@ WORD SearchDir(	BPB *bpb,			/*输入：分区BPB*/
 			fstblk = bpb->secoff + bpb->cluoff + bpb->spc * idx[idxi].fst;	/*取得要读取的首扇区号*/
 			for (i = 0; i < blkcou; i += idxblkcou)
 			{
-				WORD j;
+				DIR *CurDir;
 
 				ReadSector(bpb->DRV_num, fstblk, idxblkcou, FAR2LINE((DWORD)((void far *)buf)));	/*读取数据扇区*/
-				for (j = 0; j < bpb->bps * idxblkcou / sizeof(DIR); j++)
-				{
-					if (strcmp(((DIR *)buf)[j].name, FileName) == 0)	/*搜索成功*/
-					{
-						*DstDir = ((DIR *)buf)[j];	/*复制找到的目录项*/
-						return NO_ERROR;
-					}
-				}
+				for (CurDir = (DIR *)buf; CurDir < (DIR *)(buf + bpb->bps * idxblkcou); CurDir++)
+					if (strcmp(CurDir->name, FileName) == 0)	/*搜索成功*/
+						if ((isDir && (CurDir->attr & 0x10)) || (!isDir && !(CurDir->attr & 0x10)))
+						{
+							*DstDir = *CurDir;	/*复制找到的目录项*/
+							return NO_ERROR;
+						}
 				brd += bpb->bps * idxblkcou;
 				if (brd >= SrcDir->len[0])	/*读取完成*/
 					return NOT_FOUND;
@@ -281,9 +285,7 @@ DWORD ReadPath(	BPB *bpb,			/*输入：分区BPB*/
 		{
 			*cp++ = 0;
 			PutS(path);
-			if (SearchDir(bpb, idx, buf, SrcDir, path, DstDir) != NO_ERROR)	/*取得目录项*/
-				return 0;
-			if (!(DstDir->attr & 0x10))	/*检查是否是目录*/
+			if (SearchDir(bpb, idx, buf, SrcDir, path, TRUE, DstDir) != NO_ERROR)	/*取得目录项*/
 				return 0;
 			*SrcDir = *DstDir;
 			path = cp;
@@ -294,9 +296,7 @@ DWORD ReadPath(	BPB *bpb,			/*输入：分区BPB*/
 			DWORD end;
 
 			PutS(path);
-			if (SearchDir(bpb, idx, buf, SrcDir, path, DstDir) != NO_ERROR)	/*取得文件目录项*/
-				return 0;
-			if (DstDir->attr & 0x10)	/*检查是否是文件*/
+			if (SearchDir(bpb, idx, buf, SrcDir, path, FALSE, DstDir) != NO_ERROR)	/*取得文件目录项*/
 				return 0;
 			end = ReadFile(bpb, idx, DstDir, BufferAddr);	/*读取文件*/
 			if (end == BufferAddr)
