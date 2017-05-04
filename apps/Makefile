@@ -23,7 +23,7 @@ DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 HEADS		= ../MkApi/ulimkapi.h ../driver/basesrv.h
 HEADOBJ		= ../objs/apphead.o
 OBJS		= ../objs/loader.o ../objs/cmd.o ../objs/3demo.o ../objs/3dline.o ../objs/workout.o ../objs/jpg.o ../objs/clock.o ../objs/desktop.o ../objs/guitest.o ../objs/calc.o ../objs/gmgr.o ../objs/logo.o ../objs/1024.o ../objs/sortdemo.o ../objs/gravit.o
-BINS		= ../out/ulios/loader.bin ../out/ulios/cmd.bin ../out/ulios/3demo.bin ../out/ulios/3dline.bin ../out/ulios/workout.bin ../out/ulios/jpg.bin ../out/ulios/clock.bin ../out/ulios/desktop.bin ../out/ulios/guitest.bin ../out/ulios/calc.bin ../out/ulios/gmgr.bin ../out/ulios/logo.bin ../out/ulios/1024.bin ../out/ulios/sortdemo.bin ../out/ulios/gravit.bin
+BINS		= ../out/ulios/loader.bin ../out/ulios/cmd.bin ../out/apps/3demo.bin ../out/apps/3dline.bin ../out/apps/workout.bin ../out/apps/jpg.bin ../out/apps/clock.bin ../out/ulios/desktop.bin ../out/apps/guitest.bin ../out/apps/calc.bin ../out/ulios/gmgr.bin ../out/apps/logo.bin ../out/apps/1024.bin ../out/apps/sortdemo.bin ../out/apps/gravit.bin
 
 # All Phony Targets
 .PHONY : all redo clean
@@ -43,43 +43,43 @@ clean :
 ../out/ulios/cmd.bin : ../objs/cmd.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/cmd.o
 
-../out/ulios/3demo.bin : ../objs/3demo.o $(HEADOBJ) $(LDFILE)
+../out/apps/3demo.bin : ../objs/3demo.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/3demo.o ../objs/gdi.o
 
-../out/ulios/3dline.bin : ../objs/3dline.o $(HEADOBJ) $(LDFILE)
+../out/apps/3dline.bin : ../objs/3dline.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/3dline.o ../objs/gdi.o
 
-../out/ulios/workout.bin : ../objs/workout.o $(HEADOBJ) $(LDFILE)
+../out/apps/workout.bin : ../objs/workout.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/workout.o
 
-../out/ulios/jpg.bin : ../objs/jpg.o $(HEADOBJ) $(LDFILE)
+../out/apps/jpg.bin : ../objs/jpg.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/jpg.o ../objs/gdi.o
 
-../out/ulios/clock.bin : ../objs/clock.o $(HEADOBJ) $(LDFILE)
+../out/apps/clock.bin : ../objs/clock.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/clock.o ../objs/gdi.o
 
 ../out/ulios/desktop.bin : ../objs/desktop.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/desktop.o ../objs/malloc.o ../objs/gclient.o
 
-../out/ulios/guitest.bin : ../objs/guitest.o $(HEADOBJ) $(LDFILE)
+../out/apps/guitest.bin : ../objs/guitest.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/guitest.o ../objs/malloc.o ../objs/gclient.o
 
-../out/ulios/calc.bin : ../objs/calc.o $(HEADOBJ) $(LDFILE)
+../out/apps/calc.bin : ../objs/calc.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/calc.o ../objs/malloc.o ../objs/gclient.o
 
 ../out/ulios/gmgr.bin : ../objs/gmgr.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/gmgr.o ../objs/malloc.o ../objs/gclient.o
 
-../out/ulios/logo.bin : ../objs/logo.o $(HEADOBJ) $(LDFILE)
+../out/apps/logo.bin : ../objs/logo.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/logo.o ../objs/gdi.o ../objs/malloc.o
 
-../out/ulios/1024.bin : ../objs/1024.o $(HEADOBJ) $(LDFILE)
+../out/apps/1024.bin : ../objs/1024.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/1024.o ../objs/malloc.o ../objs/gclient.o
 
-../out/ulios/sortdemo.bin : ../objs/sortdemo.o $(HEADOBJ) $(LDFILE)
+../out/apps/sortdemo.bin : ../objs/sortdemo.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/sortdemo.o ../objs/malloc.o ../objs/gclient.o
 
-../out/ulios/gravit.bin : ../objs/gravit.o $(HEADOBJ) $(LDFILE)
+../out/apps/gravit.bin : ../objs/gravit.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/gravit.o ../objs/gdi.o
 
 ../objs/apphead.o : ../MkApi/apphead.c
