@@ -7,6 +7,8 @@
 #ifndef	_ULIDEF_H_
 #define	_ULIDEF_H_
 
+#define DEBUG	/*编译调试级内核时保留此定义*/
+
 typedef unsigned char		BYTE;	/*8位*/
 typedef unsigned short		WORD;	/*16位*/
 typedef unsigned long		DWORD;	/*32位*/

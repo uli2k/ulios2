@@ -446,6 +446,7 @@ int main()
 	THREAD_ID ptid;
 	long res;
 
+	KDebug("booting... fs server\n");
 	if ((res = InitFS()) != NO_ERROR)
 		return res;
 	InitPart();

@@ -7,7 +7,6 @@
 #ifndef	_KNLDEF_H_
 #define	_KNLDEF_H_
 
-#include "ulidef.h"
 #include "x86cpu.h"
 #include "error.h"
 #include "kalloc.h"
@@ -17,6 +16,7 @@
 #include "ipc.h"
 #include "page.h"
 #include "task.h"
+#include "debug.h"
 
 /**********内核属性常数**********/
 

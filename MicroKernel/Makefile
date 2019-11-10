@@ -20,8 +20,8 @@ LDFLAGS		= -T $(LDFILE) -mi386go32 -Map ../objs/knlmap.txt
 DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 
 # This Program
-HEADS		= bootdata.h cintr.h error.h exec.h ipc.h kalloc.h knldef.h page.h task.h ulidef.h x86cpu.h
-OBJS		= ../objs/head.o ../objs/intr.o ../objs/cintr.o ../objs/exec.o ../objs/global.o ../objs/kalloc.o ../objs/task.o ../objs/ipc.o ../objs/page.o ../objs/ulios.o
+HEADS		= bootdata.h cintr.h error.h exec.h ipc.h kalloc.h knldef.h page.h task.h ulidef.h x86cpu.h debug.h
+OBJS		= ../objs/head.o ../objs/intr.o ../objs/cintr.o ../objs/exec.o ../objs/global.o ../objs/kalloc.o ../objs/task.o ../objs/ipc.o ../objs/page.o ../objs/debug.o ../objs/ulios.o
 KERNELBIN	= ../out/ulios/uliknl.bin
 
 # All Phony Targets
@@ -67,6 +67,9 @@ $(KERNELBIN) : $(OBJS) $(LDFILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ../objs/task.o : task.c $(HEADS)
+	$(CC) $(CFLAGS) -o $@ $<
+
+../objs/debug.o : debug.c $(HEADS)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ../objs/ulios.o : ulios.c $(HEADS) ulios.h

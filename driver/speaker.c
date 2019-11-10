@@ -30,6 +30,7 @@ int main()
 {
 	long res;		/*返回结果*/
 
+	KDebug("booting... speaker driver\n");
 	if ((res = KRegKnlPort(SRV_SPK_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	for (;;)

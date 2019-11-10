@@ -93,6 +93,7 @@ int main()
 	DWORD bootsec, clk, RandSeed;	/*启动时的1970秒数*/
 	long res;	/*返回结果*/
 
+	KDebug("booting... time driver\n");
 	if ((res = KRegKnlPort(SRV_TIME_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	do	/*读取BIOS时间*/

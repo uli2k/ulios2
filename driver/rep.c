@@ -108,6 +108,7 @@ int main()
 	};
 	long res;
 
+	KDebug("booting... rep driver\n");
 	if ((res = KRegKnlPort(SRV_REP_PORT)) != NO_ERROR)	/*×¢²á·þÎñ¶Ë¿ÚºÅ*/
 		return res;
 	for (;;)

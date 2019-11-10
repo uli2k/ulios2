@@ -7,6 +7,8 @@
 #ifndef _ULIMKAPI_H_
 #define _ULIMKAPI_H_
 
+#define DEBUG	/*编译调试级内核时保留此定义*/
+
 /**********数据类型**********/
 typedef unsigned char		BYTE;	/*8位*/
 typedef unsigned short		WORD;	/*16位*/
@@ -321,6 +323,18 @@ static inline void KUlock(volatile DWORD *addr)
 {
 	*addr = FALSE;
 }
+
+#ifdef DEBUG
+/*内核级调试*/
+static inline long KDebug(const char *addr)
+{
+	register long res;
+	__asm__ __volatile__("int $0xF0": "=a"(res): "0"(0x1A0000), "S"(addr));
+	return res;
+}
+#else
+#define KDebug(...)
+#endif
 
 /**********通用操作**********/
 

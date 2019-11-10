@@ -9,6 +9,7 @@
 /*内核变量初始化*/
 static inline void InitKnlVal()
 {
+	KPrint("Initing... kernel variables\n");
 	memset32(KnlValue, 0, KVAL_LEN * sizeof(BYTE) / sizeof(DWORD));	/*清空零散变量*/
 	memset32(kpt, INVALID, KPT_LEN * sizeof(THREAD_ID) / sizeof(DWORD));	/*初始化内核端口注册表*/
 }
@@ -16,6 +17,7 @@ static inline void InitKnlVal()
 /*内核内存初始化*/
 static inline void InitKFMT()
 {
+	KPrint("Initing... kernel heap manager\n");
 	InitFbt(kmmt, FMT_LEN, kdat, KDAT_SIZ);
 }
 
@@ -25,6 +27,7 @@ static inline long InitPMM()
 	DWORD i;
 	MEM_ARDS *CurArd;
 
+	KPrint("Initing... physical memory manager\n");
 	i = (((MemEnd - UPHYMEM_ADDR) + 0x0001FFFF) >> 17);	/*取得进程物理页管理表长度*/
 	if ((pmmap = (DWORD*)kmalloc(i * sizeof(DWORD))) == NULL)	/*建立用户内存位图,以4字节为单位*/
 		return KERR_OUT_OF_KNLMEM;
@@ -32,7 +35,10 @@ static inline long InitPMM()
 	PmmLen = (i << 5);	/*用户内存总页数*/
 	PmpID = INVALID;
 	RemmSiz = 0;
+	KPrint("E820 MemType\tAddress\tSize\n");
 	for (CurArd = ards; CurArd->addr != INVALID; CurArd++)
+	{
+		KPrint("%d\t0x%X\t0x%X\n", CurArd->type, CurArd->addr, CurArd->siz);
 		if (CurArd->type == ARDS_TYPE_RAM && CurArd->addr + CurArd->siz > UPHYMEM_ADDR)	/*内存区有效且包含了进程内存页面*/
 		{
 			DWORD fst, cou, end, tcu;	/*页面起始块,数量,循环结束值,临时数量*/
@@ -67,6 +73,8 @@ static inline long InitPMM()
 			if (cou)	/*32页边界结束的零碎块*/
 				pmmap[fst >> 5] &= (0xFFFFFFFF << cou);
 		}
+	}
+	KPrint("Available Memory Size: 0x%X\n", RemmSiz);
 	return NO_ERROR;
 }
 
@@ -75,6 +83,7 @@ static inline long InitMsg()
 {
 	MESSAGE_DESC *msg;
 
+	KPrint("Initing... message manager\n");
 	if ((FstMsg = (MESSAGE_DESC*)kmalloc(MSGMT_LEN * sizeof(MESSAGE_DESC))) == NULL)
 		return KERR_OUT_OF_KNLMEM;
 	for (msg = FstMsg; msg < &FstMsg[MSGMT_LEN - 1]; msg++)
@@ -88,6 +97,7 @@ static inline long InitMap()
 {
 	MAPBLK_DESC *map;
 
+	KPrint("Initing... address mapping manager\n");
 	if ((FstMap = (MAPBLK_DESC*)kmalloc(MAPMT_LEN * sizeof(MAPBLK_DESC))) == NULL)
 		return KERR_OUT_OF_KNLMEM;
 	for (map = FstMap; map < &FstMap[MAPMT_LEN - 1]; map++)
@@ -99,6 +109,7 @@ static inline long InitMap()
 /*进程管理表初始化*/
 static inline void InitPMT()
 {
+	KPrint("Initing... process manager\n");
 	memset32(pmt, 0, PMT_LEN * sizeof(PROCESS_DESC*) / sizeof(DWORD));
 	EndPmd = FstPmd = pmt;
 /*	CurPmd = NULL;
@@ -112,6 +123,7 @@ static inline void InitPMT()
 /*初始化内核进程*/
 static inline void InitKnlProc()
 {
+	KPrint("Initing... kernel process\n");
 /*	memset32(&KnlTss, 0, sizeof(TSS) / sizeof(DWORD));
 */	KnlTss.cr3 = (DWORD)kpdt;
 	KnlTss.io = sizeof(TSS);
@@ -148,6 +160,7 @@ SEG_GATE_DESC IsrIdtTable[] = {
 /*中断处理初始化*/
 static inline void InitINTR()
 {
+	KPrint("Initing... interrupts & exceptions\n");
 	memcpy32(idt, IsrIdtTable, sizeof(IsrIdtTable) / sizeof(DWORD));	/*复制20个ISR的门描述符*/
 	SetGate(&idt[INTN_APICALL], KCODE_SEL, (DWORD)AsmApiCall, DESC_ATTR_P | DESC_ATTR_DPL3 | GATE_ATTR_T_TRAP);	/*设置系统调用*/
 	memset32(IrqPort, INVALID, IRQ_LEN * sizeof(THREAD_ID) / sizeof(DWORD));	/*初始化IRQ端口注册表*/
@@ -178,6 +191,7 @@ static inline long InitBaseSrv()
 	THREAD_ID ptid;
 	long res;
 
+	KPrint("Loading... basic services\n");
 	for (CurSeg = &BaseSrv[1]; CurSeg->addr; CurSeg++)
 		if ((res = CreateProc(EXEC_ARGV_BASESRV | EXEC_ARGV_DRIVER, CurSeg->addr, CurSeg->siz, &ptid)) != NO_ERROR)
 			return res;

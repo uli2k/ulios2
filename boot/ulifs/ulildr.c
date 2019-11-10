@@ -63,7 +63,7 @@ typedef struct _DIR
 #define SETUP		((void (*)())0x1A00)			/*Setup程序位置*/
 #define BIN_ADDR	((DWORD *)0x0080)				/*Bin程序段数据数组*/
 #define SYS_DIR		((BYTE *)0x0280)				/*系统目录字符串*/
-#define VESA_MODE	((WORD *)0x02FC)				/*启动VESA模式号*/
+#define VESA_MODE	((DWORD *)0x02FC)				/*启动VESA模式号*/
 
 #define TRUE	1
 #define FALSE	0
@@ -94,9 +94,9 @@ WORD strcmp(BYTE *str1, BYTE *str2)
 	return 1;
 }
 
-WORD atol(BYTE *str)
+DWORD atol(BYTE *str)
 {
-	WORD i;
+	DWORD i;
 
 	for (i = 0; *str >= '0' && *str <= '9'; str++)
 		i = i * 10 + *str - '0';
@@ -322,7 +322,7 @@ void main(BPB *bpb)
 	DIR RootDir, SrcDir, DstDir;	/*目录项缓存*/
 	BYTE BootList[4096], *cmd;	/*启动列表*/
 	DWORD addr = 0x10000, *BinAddr = BIN_ADDR, end;	/*内核存放位置, 程序段数据指针*/
-	WORD *VesaMode = VESA_MODE;
+	DWORD *VesaMode = VESA_MODE;
 
 	if (bpb->bps > BUF_COU)	/*检查每扇区字节数是否合法*/
 		goto errip;

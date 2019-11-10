@@ -16,6 +16,7 @@ int main()
 	long res;	/*返回结果*/
 	BYTE font[FONT_SIZE];	/*字体*/
 
+	KDebug("booting... font driver\n");
 	if ((res = KRegKnlPort(SRV_FONT_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	if ((res = KMapPhyAddr(&addr, 0x90280, 0x7C)) != NO_ERROR)	/*取得系统目录*/

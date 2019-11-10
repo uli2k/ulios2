@@ -21,6 +21,7 @@ int main()
 	long res;	/*返回结果*/
 	WORD ModeList[VESA_MAX_MODE];	/*显示模式列表*/
 
+	KDebug("booting... vesa driver\n");
 	if ((res = KRegKnlPort(SRV_VESA_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	if ((res = KMapPhyAddr(&vm, 0x90000, 0x70000)) != NO_ERROR)	/*取得显卡信息*/

@@ -351,6 +351,7 @@ int main()
 {
 	long res;
 
+	KDebug("booting... cui driver\n");
 	if ((res = KRegKnlPort(SRV_CUI_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	if (GCinit() != NO_ERROR)	/*优先使用GUI*/

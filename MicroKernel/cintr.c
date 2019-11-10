@@ -25,6 +25,9 @@ void (*ApiCallTable[])(DWORD *argv) = {
 	ApiKillProcess, ApiRegKnlPort, ApiUnregKnlPort, ApiGetKpToThed, ApiRegIrq, ApiUnregIrq, ApiSendMsg, ApiRecvMsg,
 	ApiRecvProcMsg, ApiMapPhyAddr, ApiMapUserAddr, ApiFreeAddr, ApiWriteProcAddr, ApiReadProcAddr, ApiUnmapProcAddr, ApiCnlmapProcAddr,
 	ApiGetClock, ApiLock
+#ifdef DEBUG
+	,ApiDebug
+#endif
 };
 
 /*注册IRQ信号的响应线程*/
@@ -141,6 +144,10 @@ void IsrProc(DWORD edi, DWORD esi, DWORD ebp, DWORD esp, DWORD ebx, DWORD edx, D
 {
 	MESSAGE_DESC *msg;
 
+	KPrint("ISR:0x%X\tcode:0x%X\tEIP:0x%X\tEFLAGS:0x%X\n", IsrN, ErrCode, eip, eflags);
+	KPrint("EAX:0x%X\tEBX:0x%X\tECX:0x%X\tEDX:0x%X\n", eax, ebx, ecx, edx);
+	KPrint("ESI:0x%X\tEDI:0x%X\tEBP:0x%X\tESP:0x%X\n", esi, edi, ebp, esp);
+	KPrint("CS:0x%X\tDS:0x%X\tES:0x%X\tFS:0x%X\tGS:0x%X\n", cs, ds, es, fs, gs);
 	if ((msg = AllocMsg()) != NULL)	/*通知报告服务器陷阱消息*/
 	{
 		msg->ptid = kpt[REP_KPORT];
@@ -595,3 +602,23 @@ void ApiLock(DWORD *argv)
 	sti();
 	argv[EAX_ID] = NO_ERROR;
 }
+
+#ifdef DEBUG
+
+/*内核级调试*/
+void ApiDebug(DWORD *argv)
+{
+	void *addr;
+	DWORD data[MSG_DATA_LEN];
+
+	addr = (void*)argv[ESI_ID];
+	if (addr < UADDR_OFF || addr > (void*)(0 - sizeof(data)))
+	{
+		argv[EAX_ID] = KERR_INVALID_MEMARGS_ADDR;
+		return;
+	}
+	KPrint((const char *)addr);
+	CurPmd->CurTmd->attr &= (~THED_ATTR_APPS);	/*防止访问用户内存时发生页异常,重新进入系统调用态*/
+}
+
+#endif

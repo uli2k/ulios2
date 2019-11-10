@@ -134,6 +134,7 @@ int main()
 	long res;		/*返回结果*/
 	HD_ARGS *haddr;
 
+	KDebug("booting... athd driver\n");
 	if ((res = KRegKnlPort(SRV_ATHD_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	if ((res = KRegIrq(ATHD_IRQ)) != NO_ERROR)	/*注册中断请求号*/

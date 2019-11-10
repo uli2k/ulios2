@@ -1,4 +1,4 @@
-/*	cintr.c for ulios
+/*	cintr.h for ulios
 	作者：孙亮
 	功能：C中断/异常/系统调用处理
 	最后修改日期：2009-07-01
@@ -158,5 +158,10 @@ void ApiGetClock(DWORD *argv);
 
 /*线程同步锁操作*/
 void ApiLock(DWORD *argv);
+
+#ifdef DEBUG
+/*内核级调试*/
+void ApiDebug(DWORD *argv);
+#endif
 
 #endif

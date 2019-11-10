@@ -248,6 +248,7 @@ int main()
 {
 	long res;
 
+	KDebug("booting... gui server\n");
 	if ((res = InitGUI()) != NO_ERROR)
 		return res;
 	InitKbdMus();

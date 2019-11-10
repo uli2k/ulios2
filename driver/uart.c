@@ -241,6 +241,7 @@ int main()
 	THREAD_ID ptid;
 	long res;		/*返回结果*/
 
+	KDebug("booting... uart driver\n");
 	if ((res = KRegKnlPort(SRV_UART_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	memset32(req, 0, sizeof(req) / sizeof(DWORD));	/*初始化变量*/

@@ -96,6 +96,7 @@ int main()
 	THREAD_ID RecvPtid[RECVPTID_LEN], *CurRecv;	/*接收消息线程ID栈*/
 	long res;	/*返回结果*/
 
+	KDebug("booting... kbdmus driver\n");
 	if ((res = KRegKnlPort(SRV_KBDMUS_PORT)) != NO_ERROR)	/*注册服务端口号*/
 		return res;
 	/*键盘初始化*/
