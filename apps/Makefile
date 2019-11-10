@@ -22,8 +22,8 @@ DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 # This Program
 HEADS		= ../MkApi/ulimkapi.h ../driver/basesrv.h
 HEADOBJ		= ../objs/apphead.o
-OBJS		= ../objs/loader.o ../objs/cmd.o ../objs/3demo.o ../objs/3dline.o ../objs/workout.o ../objs/jpg.o ../objs/clock.o ../objs/desktop.o ../objs/guitest.o ../objs/calc.o ../objs/gmgr.o ../objs/logo.o ../objs/1024.o ../objs/sortdemo.o ../objs/gravit.o
-BINS		= ../out/ulios/loader.bin ../out/ulios/cmd.bin ../out/apps/3demo.bin ../out/apps/3dline.bin ../out/apps/workout.bin ../out/apps/jpg.bin ../out/apps/clock.bin ../out/ulios/desktop.bin ../out/apps/guitest.bin ../out/apps/calc.bin ../out/ulios/gmgr.bin ../out/apps/logo.bin ../out/apps/1024.bin ../out/apps/sortdemo.bin ../out/apps/gravit.bin
+OBJS		= ../objs/loader.o ../objs/cmd.o ../objs/3demo.o ../objs/3dline.o ../objs/workout.o ../objs/jpg.o ../objs/clock.o ../objs/desktop.o ../objs/guitest.o ../objs/calc.o ../objs/gmgr.o ../objs/logo.o ../objs/1024.o ../objs/sortdemo.o ../objs/gravit.o ../objs/life.o
+BINS		= ../out/ulios/loader.bin ../out/ulios/cmd.bin ../out/apps/3demo.bin ../out/apps/3dline.bin ../out/apps/workout.bin ../out/apps/jpg.bin ../out/apps/clock.bin ../out/ulios/desktop.bin ../out/apps/guitest.bin ../out/apps/calc.bin ../out/ulios/gmgr.bin ../out/apps/logo.bin ../out/apps/1024.bin ../out/apps/sortdemo.bin ../out/apps/gravit.bin ../out/apps/life.bin
 
 # All Phony Targets
 .PHONY : all redo clean
@@ -82,6 +82,9 @@ clean :
 ../out/apps/gravit.bin : ../objs/gravit.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/gravit.o ../objs/gdi.o
 
+../out/apps/life.bin : ../objs/life.o $(HEADOBJ) $(LDFILE)
+	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/life.o ../objs/gdi.o
+
 ../objs/apphead.o : ../MkApi/apphead.c
 	$(CC) $(CFLAGS) -o $@ $<
 
@@ -128,4 +131,7 @@ clean :
 	$(CC) $(CFLAGS) -o $@ $<
 
 ../objs/gravit.o : gravit.c $(HEADS) ../lib/gdi.h ../lib/math.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+../objs/life.o : life.c $(HEADS) ../lib/gdi.h
 	$(CC) $(CFLAGS) -o $@ $<

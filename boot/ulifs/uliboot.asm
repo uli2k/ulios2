@@ -59,7 +59,7 @@ start:	;设置段
 	mov	di,	OffsetOfBPB	;目的偏移
 	mov	cx,	SizeOfBPB / 2
 	rep
-	movsw
+	movsw	;DS:SI复制到ES:DI
 
 	;再设数据段
 	mov	ds,	ax

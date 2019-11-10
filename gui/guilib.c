@@ -302,28 +302,28 @@ void GuiPutImage(long x, long y, DWORD *img, long memw, long w, long h)
 	case 15:
 		{
 			WORD *tmpvm;
-			for (tmpvm = (WORD*)GDIvm + x + GDIwidth * y; h > 0; tmpvm += GDIwidth, img += memw, h--)
+			for (tmpvm = (WORD*)GDIvm + x + y * GDIwidth; h > 0; tmpvm += GDIwidth, img += memw, h--)
 				Dw2Rgb15(tmpvm, img, w);
 		}
 		break;
 	case 16:
 		{
 			WORD *tmpvm;
-			for (tmpvm = (WORD*)GDIvm + x + GDIwidth * y; h > 0; tmpvm += GDIwidth, img += memw, h--)
+			for (tmpvm = (WORD*)GDIvm + x + y * GDIwidth; h > 0; tmpvm += GDIwidth, img += memw, h--)
 				Dw2Rgb16(tmpvm, img, w);
 		}
 		break;
 	case 24:
 		{
 			RGB24 *tmpvm;
-			for (tmpvm = (RGB24*)GDIvm + x + GDIwidth * y; h > 0; tmpvm += GDIwidth, img += memw, h--)
+			for (tmpvm = (RGB24*)GDIvm + x + y * GDIwidth; h > 0; tmpvm += GDIwidth, img += memw, h--)
 				Dw2Rgb24(tmpvm, img, w);
 		}
 		break;
 	case 32:
 		{
 			DWORD *tmpvm;
-			for (tmpvm = (DWORD*)GDIvm + x + GDIwidth * y; h > 0; tmpvm += GDIwidth, img += memw, h--)
+			for (tmpvm = (DWORD*)GDIvm + x + y * GDIwidth; h > 0; tmpvm += GDIwidth, img += memw, h--)
 				memcpy32(tmpvm, img, w);
 		}
 		break;
