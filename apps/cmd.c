@@ -4,6 +4,7 @@
 	最后修改日期：2010-06-14
 */
 
+#include "../lib/string.h"
 #include "../driver/basesrv.h"
 #include "../fs/fsapi.h"
 #include "../gui/guiapi.h"
@@ -12,118 +13,6 @@
 #define PROMPT		"命令:"
 
 char cmd[CMD_LEN], *cmdp;	/*输入命令缓冲*/
-
-/*双字转化为数字*/
-char *Itoa(char *buf, DWORD n, DWORD r)
-{
-	static const char num[] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-	char *p, *q;
-
-	q = p = buf;
-	do
-	{
-		*p++ = num[n % r];
-		n /= r;
-	}
-	while (n);
-	buf = p;	/*确定字符串尾部*/
-	*p-- = '\0';
-	while (p > q)	/*翻转字符串*/
-	{
-		char c = *q;
-		*q++ = *p;
-		*p-- = c;
-	}
-	return buf;
-}
-
-/*格式化输出*/
-void Sprintf(char *buf, const char *fmtstr, ...)
-{
-	long num;
-	const DWORD *args = (DWORD*)(&fmtstr);
-
-	while (*fmtstr)
-	{
-		if (*fmtstr == '%')
-		{
-			fmtstr++;
-			switch (*fmtstr)
-			{
-			case 'd':
-				num = *((long*)++args);
-				if (num < 0)
-				{
-					*buf++ = '-';
-					buf = Itoa(buf, -num, 10);
-				}
-				else
-					buf = Itoa(buf, num, 10);
-				break;
-			case 'u':
-				buf = Itoa(buf, *((DWORD*)++args), 10);
-				break;
-			case 'x':
-			case 'X':
-				buf = Itoa(buf, *((DWORD*)++args), 16);
-				break;
-			case 'o':
-				buf = Itoa(buf, *((DWORD*)++args), 8);
-				break;
-			case 's':
-				buf = strcpy(buf, *((const char**)++args)) - 1;
-				break;
-			case 'c':
-				*buf++ = *((char*)++args);
-				break;
-			default:
-				*buf++ = *fmtstr;
-			}
-		}
-		else
-			*buf++ = *fmtstr;
-		fmtstr++;
-	}
-	*buf = '\0';
-}
-
-/*10进制字符串转换为无符号整数*/
-DWORD Atoi10(const char *str)
-{
-	DWORD res;
-
-	res = 0;
-	for (;;)
-	{
-		if (*str >= '0' && *str <= '9')
-			res = res * 10 + (*str - '0');
-		else
-			break;
-		str++;
-	}
-	return res;
-}
-
-/*16进制字符串转换为无符号整数*/
-DWORD Atoi16(const char *str)
-{
-	DWORD res;
-
-	res = 0;
-	for (;;)
-	{
-		if (*str >= '0' && *str <= '9')
-			res = res * 16 + (*str - '0');
-		else if (*str >= 'A' && *str <= 'F')
-			res = res * 16 + (*str - 'A' + 10);
-		else if (*str >= 'a' && *str <= 'f')
-			res = res * 16 + (*str - 'a' + 10);
-		else
-			break;
-		str++;
-	}
-	return res;
-}
 
 /*清屏*/
 void cls(char *args)
@@ -149,7 +38,7 @@ void SetColor(char *args)
 			return;
 		}
 	}
-	CUISetCol(Atoi16(args), Atoi16(p));
+	CUISetCol(atoi16(args), atoi16(p));
 }
 
 /*退出*/
@@ -240,7 +129,7 @@ void partlist(char *args)
 		char buf[4096];
 
 		FSGetPart(pid, &pi.info);
-		Sprintf(buf, "/%u\t容量:%uMB\t剩余:%uMB\t格式:%s\t卷标:%s\n", pid, (DWORD)(pi.info.size / 0x100000), (DWORD)(pi.info.remain / 0x100000), pi.fstype, pi.info.label);
+		sprintf(buf, "/%u\t容量:%uMB\t剩余:%uMB\t格式:%s\t卷标:%s\n", pid, (DWORD)(pi.info.size / 0x100000), (DWORD)(pi.info.remain / 0x100000), pi.fstype, pi.info.label);
 		CUIPutS(buf);
 		ptid.ProcID = SRV_CUI_PORT;
 		ptid.ThedID = INVALID;
@@ -276,7 +165,7 @@ void dir(char *args)
 		char buf[4096];
 
 		TMLocalTime(fi.ModifyTime, &tm);
-		Sprintf(buf, "%d-%d-%d\t%d:%d:%d   \t%s\t%d\t%c%c%c%c%c%c\t%s\n", tm.yer, tm.mon, tm.day, tm.hor, tm.min, tm.sec, (fi.attr & FILE_ATTR_DIREC) ? "目录" : "文件", (DWORD)fi.size, (fi.attr & FILE_ATTR_RDONLY) ? 'R' : ' ', (fi.attr & FILE_ATTR_HIDDEN) ? 'H' : ' ', (fi.attr & FILE_ATTR_SYSTEM) ? 'S' : ' ', (fi.attr & FILE_ATTR_LABEL) ? 'L' : ' ', (fi.attr & FILE_ATTR_ARCH) ? 'A' : ' ', (fi.attr & FILE_ATTR_EXEC) ? 'X' : ' ', fi.name);
+		sprintf(buf, "%d-%d-%d\t%d:%d:%d   \t%s\t%d\t%c%c%c%c%c%c\t%s\n", tm.yer, tm.mon, tm.day, tm.hor, tm.min, tm.sec, (fi.attr & FILE_ATTR_DIREC) ? "目录" : "文件", (DWORD)fi.size, (fi.attr & FILE_ATTR_RDONLY) ? 'R' : ' ', (fi.attr & FILE_ATTR_HIDDEN) ? 'H' : ' ', (fi.attr & FILE_ATTR_SYSTEM) ? 'S' : ' ', (fi.attr & FILE_ATTR_LABEL) ? 'L' : ' ', (fi.attr & FILE_ATTR_ARCH) ? 'A' : ' ', (fi.attr & FILE_ATTR_EXEC) ? 'X' : ' ', fi.name);
 		CUIPutS(buf);
 		ptid.ProcID = SRV_CUI_PORT;
 		ptid.ThedID = INVALID;
@@ -363,7 +252,7 @@ void showtim(char *args)
 	TM tm;
 	char buf[40];
 	TMCurTime(&tm);
-	Sprintf(buf, "现在时刻:%d年%d月%d日 星期%s %d时%d分%d秒\n", tm.yer, tm.mon, tm.day, WeekName[tm.wday], tm.hor, tm.min, tm.sec);
+	sprintf(buf, "现在时刻:%d年%d月%d日 星期%s %d时%d分%d秒\n", tm.yer, tm.mon, tm.day, WeekName[tm.wday], tm.hor, tm.min, tm.sec);
 	CUIPutS(buf);
 }
 
@@ -379,7 +268,7 @@ void proclist(char *args)
 		THREAD_ID ptid;
 		char buf[4096];
 
-		Sprintf(buf, "PID:%d\t%s\n", pid, fi.name);
+		sprintf(buf, "PID:%d\t%s\n", pid, fi.name);
 		CUIPutS(buf);
 		ptid.ProcID = SRV_CUI_PORT;
 		ptid.ThedID = INVALID;
@@ -400,7 +289,7 @@ void proclist(char *args)
 /*杀死进程*/
 void killproc(char *args)
 {
-	if (KKillProcess(Atoi10(args)) != NO_ERROR)
+	if (KKillProcess(atoi10(args)) != NO_ERROR)
 		CUIPutS("强行结束进程失败！\n");
 }
 
@@ -428,7 +317,7 @@ void startgui(char *args)
 /*发声*/
 void sound(char *args)
 {
-	if (SPKSound(Atoi10(args)) != NO_ERROR)
+	if (SPKSound(atoi10(args)) != NO_ERROR)
 	{
 		CUIPutS("无法连接到扬声器驱动！\n");
 		return;
@@ -539,9 +428,9 @@ void CmdProc(char *str)
 		}
 	ProcStr(str, &exec, &args);
 	if (KCreateProcess(0, exec, args, &ptid) != NO_ERROR)
-		Sprintf(buf, "无效的命令或可执行文件!\n%s", PROMPT);
+		sprintf(buf, "无效的命令或可执行文件!\n%s", PROMPT);
 	else
-		Sprintf(buf, "进程ID: %d\n%s", ptid.ProcID, PROMPT);
+		sprintf(buf, "进程ID: %d\n%s", ptid.ProcID, PROMPT);
 	CUIPutS(buf);
 }
 

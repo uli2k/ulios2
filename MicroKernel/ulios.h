@@ -193,7 +193,10 @@ static inline long InitBaseSrv()
 
 	KPrint("Loading... basic services\n");
 	for (CurSeg = &BaseSrv[1]; CurSeg->addr; CurSeg++)
+	{
+		KPrint("0x%X[0x%X]\n", CurSeg->addr, CurSeg->siz);
 		if ((res = CreateProc(EXEC_ARGV_BASESRV | EXEC_ARGV_DRIVER, CurSeg->addr, CurSeg->siz, &ptid)) != NO_ERROR)
 			return res;
+	}
 	return NO_ERROR;
 }

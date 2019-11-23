@@ -325,6 +325,7 @@ static inline void KUlock(volatile DWORD *addr)
 }
 
 #ifdef DEBUG
+
 /*内核级调试*/
 static inline long KDebug(const char *addr)
 {
@@ -332,6 +333,7 @@ static inline long KDebug(const char *addr)
 	__asm__ __volatile__("int $0xF0": "=a"(res): "0"(0x1A0000), "S"(addr));
 	return res;
 }
+
 #else
 #define KDebug(...)
 #endif
@@ -428,17 +430,45 @@ static inline void strncpy(char *dest, const char *src, DWORD n)
 }
 
 /*端口输出字节(驱动专用)*/
-static inline void outb(WORD port, BYTE b)
+static inline void outb(WORD port, BYTE data)
 {
-	__asm__ __volatile__("outb %1, %w0":: "d"(port), "a"(b));
+	__asm__ __volatile__("outb %1, %w0":: "d"(port), "a"(data));
 }
 
 /*端口输入字节(驱动专用)*/
 static inline BYTE inb(WORD port)
 {
-	register BYTE b;
-	__asm__ __volatile__("inb %w1, %0": "=a"(b): "d"(port));
-	return b;
+	register BYTE data;
+	__asm__ __volatile__("inb %w1, %0": "=a"(data): "d"(port));
+	return data;
+}
+
+/*端口输出字(驱动专用)*/
+static inline void outw(WORD port, WORD data)
+{
+	__asm__ __volatile__("outw %1, %w0":: "d"(port), "a"(data));
+}
+
+/*端口输入字(驱动专用)*/
+static inline WORD inw(WORD port)
+{
+	register WORD data;
+	__asm__ __volatile__("inw %w1, %0": "=a"(data): "d"(port));
+	return data;
+}
+
+/*端口输出双字(驱动专用)*/
+static inline void outl(WORD port, DWORD data)
+{
+	__asm__ __volatile__("outl %1, %w0":: "d"(port), "a"(data));
+}
+
+/*端口输入双字(驱动专用)*/
+static inline DWORD inl(WORD port)
+{
+	register DWORD data;
+	__asm__ __volatile__("inl %w1, %0": "=a"(data): "d"(port));
+	return data;
 }
 
 /*关中断(驱动专用)*/

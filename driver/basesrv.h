@@ -551,4 +551,24 @@ static inline long IMEPutKey(DWORD key)
 	return KSendMsg(&ptid, data, 0);
 }
 
+/**********PCI总线驱动服务相关**********/
+#define SRV_PCI_PORT	12	/*PCI总线驱动服务端口*/
+
+#define MSG_ATTR_PCI	0x010C0000	/*PCI总线消息*/
+
+#define PCI_API_0	0	/*0功能号*/
+#define PCI_API_1	1	/*1功能号*/
+
+/*0号功能*/
+static inline long PCIfunc(DWORD freq)
+{
+	THREAD_ID ptid;
+	DWORD data[MSG_DATA_LEN];
+	ptid.ProcID = SRV_PCI_PORT;
+	ptid.ThedID = INVALID;
+	data[MSG_API_ID] = MSG_ATTR_PCI | PCI_API_0;
+	data[1] = freq;
+	return KSendMsg(&ptid, data, 0);
+}
+
 #endif

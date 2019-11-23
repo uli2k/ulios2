@@ -41,7 +41,7 @@ clean :
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/loader.o
 
 ../out/ulios/cmd.bin : ../objs/cmd.o $(HEADOBJ) $(LDFILE)
-	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/cmd.o
+	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/cmd.o ../objs/string.o
 
 ../out/apps/3demo.bin : ../objs/3demo.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/3demo.o ../objs/gdi.o
@@ -68,7 +68,7 @@ clean :
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/calc.o ../objs/malloc.o ../objs/gclient.o
 
 ../out/ulios/gmgr.bin : ../objs/gmgr.o $(HEADOBJ) $(LDFILE)
-	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/gmgr.o ../objs/malloc.o ../objs/gclient.o
+	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/gmgr.o  ../objs/string.o ../objs/malloc.o ../objs/gclient.o
 
 ../out/apps/logo.bin : ../objs/logo.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/logo.o ../objs/gdi.o ../objs/malloc.o
@@ -77,7 +77,7 @@ clean :
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/1024.o ../objs/malloc.o ../objs/gclient.o
 
 ../out/apps/sortdemo.bin : ../objs/sortdemo.o $(HEADOBJ) $(LDFILE)
-	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/sortdemo.o ../objs/malloc.o ../objs/gclient.o
+	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/sortdemo.o ../objs/string.o ../objs/malloc.o ../objs/gclient.o
 
 ../out/apps/gravit.bin : ../objs/gravit.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/gravit.o ../objs/gdi.o

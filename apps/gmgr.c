@@ -4,6 +4,7 @@
 	最后修改日期：2012-02-13
 */
 
+#include "../lib/string.h"
 #include "../fs/fsapi.h"
 #include "../lib/malloc.h"
 #include "../lib/gclient.h"
@@ -31,80 +32,6 @@ char PathBuf[MAX_PATH];	/*复制或剪切路径缓冲*/
 #define OP_FILE	4	/*创建文件*/
 #define OP_REN	5	/*重命名*/
 
-/*双字转化为数字*/
-char *Itoa(char *buf, DWORD n, DWORD r)
-{
-	static const char num[] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-	char *p, *q;
-
-	q = p = buf;
-	do
-	{
-		*p++ = num[n % r];
-		n /= r;
-	}
-	while (n);
-	buf = p;	/*确定字符串尾部*/
-	*p-- = '\0';
-	while (p > q)	/*翻转字符串*/
-	{
-		char c = *q;
-		*q++ = *p;
-		*p-- = c;
-	}
-	return buf;
-}
-
-/*格式化输出*/
-void Sprintf(char *buf, const char *fmtstr, ...)
-{
-	long num;
-	const DWORD *args = (DWORD*)(&fmtstr);
-
-	while (*fmtstr)
-	{
-		if (*fmtstr == '%')
-		{
-			fmtstr++;
-			switch (*fmtstr)
-			{
-			case 'd':
-				num = *((long*)++args);
-				if (num < 0)
-				{
-					*buf++ = '-';
-					buf = Itoa(buf, -num, 10);
-				}
-				else
-					buf = Itoa(buf, num, 10);
-				break;
-			case 'u':
-				buf = Itoa(buf, *((DWORD*)++args), 10);
-				break;
-			case 'x':
-			case 'X':
-				buf = Itoa(buf, *((DWORD*)++args), 16);
-				break;
-			case 'o':
-				buf = Itoa(buf, *((DWORD*)++args), 8);
-				break;
-			case 's':
-				buf = strcpy(buf, *((const char**)++args)) - 1;
-				break;
-			case 'c':
-				*buf++ = *((char*)++args);
-				break;
-			default:
-				*buf++ = *fmtstr;
-			}
-		}
-		else
-			*buf++ = *fmtstr;
-		fmtstr++;
-	}
-	*buf = '\0';
-}
-
 #define WND_WIDTH	400	/*窗口最小宽度,高度*/
 #define WND_HEIGHT	300
 #define SIDE		2	/*控件边距*/
@@ -130,7 +57,7 @@ void FillFileList()
 	while (FSReadDir(dh, &fi) == NO_ERROR)
 	{
 		char buf[MAX_PATH];
-		Sprintf(buf, "%s %s", (fi.attr & FILE_ATTR_DIREC) ? "[]" : "==", fi.name);
+		sprintf(buf, "%s %s", (fi.attr & FILE_ATTR_DIREC) ? "[]" : "==", fi.name);
 		GCLstInsertItem(FileList, item, buf, &item);
 	}
 	FSclose(dh);
@@ -169,7 +96,7 @@ long PartListMsgProc(THREAD_ID ptid, DWORD data[MSG_DATA_LEN])
 			while (FSEnumPart(&pid) == NO_ERROR)
 			{
 				char buf[4];
-				Sprintf(buf, "/%u", pid);
+				sprintf(buf, "/%u", pid);
 				GCLstInsertItem(lst, item, buf, &item);
 				pid++;
 			}
@@ -240,7 +167,7 @@ void CutBtnPressProc(CTRL_BTN *btn)
 	{
 		char buf[MAX_PATH];
 		FSGetCwd(buf, MAX_PATH);
-		Sprintf(PathBuf, "%s/%s", buf, FileList->SelItem->text + 3);
+		sprintf(PathBuf, "%s/%s", buf, FileList->SelItem->text + 3);
 		op = OP_CUT;
 		GCBtnSetDisable(PasteBtn, FALSE);
 	}
@@ -253,7 +180,7 @@ void CopyBtnPressProc(CTRL_BTN *btn)
 	{
 		char buf[MAX_PATH];
 		FSGetCwd(buf, MAX_PATH);
-		Sprintf(PathBuf, "%s/%s", buf, FileList->SelItem->text + 3);
+		sprintf(PathBuf, "%s/%s", buf, FileList->SelItem->text + 3);
 		op = OP_COPY;
 		GCBtnSetDisable(PasteBtn, FALSE);
 	}

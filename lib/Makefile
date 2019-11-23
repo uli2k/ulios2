@@ -27,12 +27,15 @@ HEADS		= ../MkApi/ulimkapi.h ../driver/basesrv.h
 
 # Default starting position
 
-all : ../objs/malloc.o ../objs/gdi.o ../objs/gclient.o
+all : ../objs/string.o ../objs/malloc.o ../objs/gdi.o ../objs/gclient.o
 
 redo : clean all
 
 clean :
-	rm -f ../objs/malloc.o ../objs/gdi.o ../objs/gclient.o
+	rm -f ../objs/string.o ../objs/malloc.o ../objs/gdi.o ../objs/gclient.o
+
+../objs/string.o : ../lib/string.c ../lib/string.h ../MkApi/ulimkapi.h
+	$(CC) $(CFLAGS) -o $@ $<
 
 ../objs/malloc.o : ../lib/malloc.c ../lib/malloc.h $(HEADS)
 	$(CC) $(CFLAGS) -o $@ $<

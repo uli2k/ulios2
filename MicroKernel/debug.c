@@ -101,10 +101,9 @@ void KPrint(const char *fmtstr, ...)
 				if (num < 0)
 				{
 					KPutC('-');
-					KPutNum(-num, 10);
+					num = -num;
 				}
-				else
-					KPutNum(num, 10);
+				KPutNum(num, 10);
 				break;
 			case 'u':
 				KPutNum(*((DWORD*)++args), 10);
@@ -115,6 +114,9 @@ void KPrint(const char *fmtstr, ...)
 				break;
 			case 'o':
 				KPutNum(*((DWORD*)++args), 8);
+				break;
+			case 'b':
+				KPutNum(*((DWORD*)++args), 2);
 				break;
 			case 's':
 				KPutStr(*((const char**)++args));

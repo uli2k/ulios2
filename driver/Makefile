@@ -22,8 +22,8 @@ DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 # This Program
 HEADS		= ../MkApi/ulimkapi.h basesrv.h
 HEADOBJ		= ../objs/apphead.o
-OBJS		= ../objs/athd.o ../objs/time.o ../objs/kbdmus.o ../objs/vesa.o ../objs/font.o ../objs/cui.o ../objs/rep.o ../objs/speaker.o ../objs/uart.o ../objs/ime.o
-BINS		= ../out/ulios/athd.bin ../out/ulios/time.bin ../out/ulios/kbdmus.bin ../out/ulios/vesa.bin ../out/ulios/font.bin ../out/ulios/cui.bin ../out/ulios/rep.bin ../out/ulios/speaker.bin ../out/ulios/uart.bin ../out/ulios/ime.bin
+OBJS		= ../objs/athd.o ../objs/time.o ../objs/kbdmus.o ../objs/vesa.o ../objs/font.o ../objs/cui.o ../objs/rep.o ../objs/speaker.o ../objs/uart.o ../objs/ime.o ../objs/pci.o
+BINS		= ../out/ulios/athd.bin ../out/ulios/time.bin ../out/ulios/kbdmus.bin ../out/ulios/vesa.bin ../out/ulios/font.bin ../out/ulios/cui.bin ../out/ulios/rep.bin ../out/ulios/speaker.bin ../out/ulios/uart.bin ../out/ulios/ime.bin ../out/ulios/pci.bin
 
 # All Phony Targets
 .PHONY : all redo clean
@@ -56,7 +56,7 @@ clean :
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/cui.o ../objs/gdi.o ../objs/malloc.o ../objs/gclient.o
 
 ../out/ulios/rep.bin : ../objs/rep.o $(HEADOBJ) $(LDFILE)
-	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/rep.o
+	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/rep.o ../objs/string.o
 
 ../out/ulios/speaker.bin : ../objs/speaker.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/speaker.o
@@ -66,6 +66,9 @@ clean :
 
 ../out/ulios/ime.bin : ../objs/ime.o $(HEADOBJ) $(LDFILE)
 	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/ime.o ../objs/malloc.o ../objs/gclient.o
+
+../out/ulios/pci.bin : ../objs/pci.o $(HEADOBJ) $(LDFILE)
+	$(LD) $(LDFLAGS) -o $@ $(HEADOBJ) ../objs/pci.o ../objs/string.o
 
 ../objs/apphead.o : ../MkApi/apphead.c
 	$(CC) $(CFLAGS) -o $@ $<
@@ -98,4 +101,7 @@ clean :
 	$(CC) $(CFLAGS) -o $@ $<
 
 ../objs/ime.o : ime.c $(HEADS) ../lib/malloc.h ../lib/gclient.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+../objs/pci.o : pci.c $(HEADS)
 	$(CC) $(CFLAGS) -o $@ $<

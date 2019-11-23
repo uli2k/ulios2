@@ -161,6 +161,11 @@ int main()
 		switch (data[MSG_ATTR_ID] & MSG_ATTR_MASK)
 		{
 		case MSG_ATTR_IRQ:	/*磁盘中断请求消息,只可能是ATHD_IRQ*/
+			if (ReqList == NULL)
+			{
+				CUIPutS("Unknown ATHD IRQ\n");
+				continue;
+			}
 			CurReq = ReqList;
 			if (CurReq->isWrite)	/*写中断*/
 			{

@@ -4,6 +4,7 @@
 	最后修改日期：2014-09-23
 */
 
+#include "../lib/string.h"
 #include "../lib/malloc.h"
 #include "../lib/gclient.h"
 
@@ -37,80 +38,6 @@ DWORD rand(DWORD x)
 {
 	RandSeed = RandSeed * 1103515245 + 12345;
 	return RandSeed % x;
-}
-
-/*双字转化为数字*/
-char *Itoa(char *buf, DWORD n, DWORD r)
-{
-	static const char num[] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-	char *p, *q;
-	
-	q = p = buf;
-	do
-	{
-		*p++ = num[n % r];
-		n /= r;
-	}
-	while (n);
-	buf = p;	/*确定字符串尾部*/
-	*p-- = '\0';
-	while (p > q)	/*翻转字符串*/
-	{
-		char c = *q;
-		*q++ = *p;
-		*p-- = c;
-	}
-	return buf;
-}
-
-/*格式化输出*/
-void Sprintf(char *buf, const char *fmtstr, ...)
-{
-	long num;
-	const DWORD *args = (DWORD*)(&fmtstr);
-	
-	while (*fmtstr)
-	{
-		if (*fmtstr == '%')
-		{
-			fmtstr++;
-			switch (*fmtstr)
-			{
-			case 'd':
-				num = *((long*)++args);
-				if (num < 0)
-				{
-					*buf++ = '-';
-					buf = Itoa(buf, -num, 10);
-				}
-				else
-					buf = Itoa(buf, num, 10);
-				break;
-			case 'u':
-				buf = Itoa(buf, *((DWORD*)++args), 10);
-				break;
-			case 'x':
-			case 'X':
-				buf = Itoa(buf, *((DWORD*)++args), 16);
-				break;
-			case 'o':
-				buf = Itoa(buf, *((DWORD*)++args), 8);
-				break;
-			case 's':
-				buf = strcpy(buf, *((const char**)++args)) - 1;
-				break;
-			case 'c':
-				*buf++ = *((char*)++args);
-				break;
-			default:
-				*buf++ = *fmtstr;
-			}
-		}
-		else
-			*buf++ = *fmtstr;
-		fmtstr++;
-	}
-	*buf = '\0';
 }
 
 void DrawData(long i, long j, BOOL isWrite)
@@ -425,7 +352,7 @@ int main()
 					long x, y;
 					
 					KGetClock(&clk);
-					Sprintf(buf, ":%uMS", (clk - StartClock) * 10);
+					sprintf(buf, ":%uMS", (clk - StartClock) * 10);
 					GCFillRect(&wnd->client, SIDE_WIDTH + i * (MAX_SORTDATA + SIDE_WIDTH) + GCCharWidth * 8, SORTARRAY_LEN + SIDE_WIDTH * 2, 14 * GCCharWidth, GCCharHeight, 0xFFC0C0C0);
 					GCDrawStr(&wnd->client, SIDE_WIDTH + i * (MAX_SORTDATA + SIDE_WIDTH) + GCCharWidth * 8, SORTARRAY_LEN + SIDE_WIDTH * 2, buf, 0xFF602060);
 					GCWndGetClientLoca(wnd, &x, &y);
